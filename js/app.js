@@ -139,8 +139,7 @@ var App = function (name) {
                 // textures.needsUpdate = true;
                 webglElem.fill_object = new THREE.Object3D();
                 scene.add(webglElem.fill_object);
-                webglElem.till_object = new THREE.Object3D();
-                scene.add(webglElem.till_object);
+
 
                 /*tills*/
 
@@ -374,6 +373,15 @@ var App = function (name) {
                 },
                 strP = {x: -30, y: 15, z: -15, scl: 100}, stepL = 0, stepH, exp = 1,
                 fill = App.const.fill, stepL = 0;
+
+            //clear scene
+            if(webglElem.till_object){
+                webglElem.scene.remove(webglElem.till_object);
+            }
+            webglElem.till_object = new THREE.Object3D();
+            webglElem.scene.add(webglElem.till_object);
+
+
             for (var i = 0; i < countOfWallTilByLength.max; i++) {
                 /*var canvas = false;
                  if (countOfWallTilByLength.cur > i) {
@@ -443,9 +451,9 @@ var App = function (name) {
             webglElem.tiles.wallS.byL.push(tile);
 
         },
-        textureLoad: function (callback) {
+        textureLoad: function (callback,src) {
             var myImage = new Image(), textures = [];
-            myImage.src = 'data/img/plita.jpg';
+            myImage.src = src;
             myImage.onload = function () {
                 var stepL = 0, stepH = 0, exp = 1, curTillSize = App.const.curWalTil.split("*"),
                     tileLength = parseInt(curTillSize[0]),
@@ -481,7 +489,8 @@ var App = function (name) {
                  }*/
                 //console.log(App);
                 tilles.rebuild('', canvasM);
-                callback();
+                if(callback instanceof Function) callback();
+
             }
 
         },
@@ -524,7 +533,7 @@ var App = function (name) {
     var strt = function () {
         gui.init();
         utils.methods.init();
-        tilles.textureLoad(tilles.createFilled);
+        tilles.textureLoad(tilles.createFilled,'data/img/plita.jpg');
         utils.methods.animate();
     }
     var ImgData = function (listOfimg) {
