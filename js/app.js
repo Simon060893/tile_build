@@ -1,8 +1,9 @@
 var App = function (name) {
     var webglElem = {tiles: {wallF: [], wallS: {byL: [], byH: []}, floor: []}},
-        remoteData = { skbxImg: []},
-        saveData=[],
-        countUnvis = {onWidth: 0, onHeight: 0};;
+        remoteData = {skbxImg: []},
+        saveData = [],
+        countUnvis = {onWidth: 0, onHeight: 0};
+    ;
     var utils = {
         events: {
             onWindowResize: function () {
@@ -17,9 +18,9 @@ var App = function (name) {
                     canvasH = $(canvas).height(), mouseVector = {}, lastInters = webglElem.lastInters;
                 $(canvas).css('cursor', 'auto');
                 if (lastInters) {
-                    lastInters.object.position.z = lastInters.object.lastPos ? lastInters.object.lastPos+0 : lastInters.object.position.z;
-                    lastInters.object.lastPos=false;
-                    lastInters.object.remove( webglElem.pSystem) ;
+                    lastInters.object.position.z = lastInters.object.lastPos ? lastInters.object.lastPos + 0 : lastInters.object.position.z;
+                    lastInters.object.lastPos = false;
+                    lastInters.object.remove(webglElem.pSystem);
                 }
                 mouseVector.x = ( (event.clientX - canvas.offsetLeft + 1) / canvasW) * 2 - 1;
                 mouseVector.y = -( (event.clientY - canvas.offsetTop) / canvasH) * 2 + 1;
@@ -53,42 +54,42 @@ var App = function (name) {
                             var tgt = evt.target || window.event.srcElement,
                                 files = tgt.files;
                             var fr = new FileReader();
-                             fr.readAsDataURL(files[0]);
+                            fr.readAsDataURL(files[0]);
                             fr.onload = function () {
                                 $('#' + App.const.loadImageText).attr('src', fr.result);
-                                tilles.textureLoad(false,fr.result);
-                            /*    setTimeout(function () {
-                                    var size = $('#' + App.const.loadImageText)[0].height;
-                                    App.resetTexture(size);
-                                    setTimeout(function () {
-                                        var canvas = document.getElementById('texture');
-                                        var textures = new THREE.Texture(canvas);
-                                        //textures.wrapS = THREE.RepeatWrapping;
-                                        //textures.wrapT = THREE.RepeatWrapping;
-                                        //textures.repeat.set( 2, 2 );
-                                        for (var i = 0; i < webglElem.scene.children.length; i++) {
-                                            var cur = webglElem.scene.children[i];
-                                            if (cur.typ == 'wall') {
-                                                cur.material = new THREE.MeshBasicMaterial({map: textures});
-                                            }
-                                        }
-                                    }, 100);
-                                }, 100);*/
+                                tilles.textureLoad(false, fr.result);
+                                /*    setTimeout(function () {
+                                 var size = $('#' + App.const.loadImageText)[0].height;
+                                 App.resetTexture(size);
+                                 setTimeout(function () {
+                                 var canvas = document.getElementById('texture');
+                                 var textures = new THREE.Texture(canvas);
+                                 //textures.wrapS = THREE.RepeatWrapping;
+                                 //textures.wrapT = THREE.RepeatWrapping;
+                                 //textures.repeat.set( 2, 2 );
+                                 for (var i = 0; i < webglElem.scene.children.length; i++) {
+                                 var cur = webglElem.scene.children[i];
+                                 if (cur.typ == 'wall') {
+                                 cur.material = new THREE.MeshBasicMaterial({map: textures});
+                                 }
+                                 }
+                                 }, 100);
+                                 }, 100);*/
                             }
                         } else {
                             arert('update your browser');
-                            if(window.parent.loader)window.parent.loader(false);
+                            if (window.parent.loader)window.parent.loader(false);
                         }
-                    }else{
+                    } else {
                         arert('it\'s seems you didn\'t load an image!!!');
-                        if(window.parent.loader)window.parent.loader(false);
+                        if (window.parent.loader)window.parent.loader(false);
                     }
                 });
             },
-            onMouseUp:function(event){
+            onMouseUp: function (event) {
                 event.preventDefault();
-                if(webglElem.lastInters && webglElem.lastInters.object.lastPos){
-                    utils.methods.setInfo({img:webglElem.lastInters.object.material.map.image.toDataURL()});
+                if (webglElem.lastInters && webglElem.lastInters.object.lastPos) {
+                    utils.methods.setInfo({img: webglElem.lastInters.object.material.map.image.toDataURL()});
                 }
             }
         },
@@ -168,7 +169,7 @@ var App = function (name) {
                     skyGeometry = new THREE.BoxGeometry(500, 500, 500), skyBox;
                 for (var i = 0; i < 6; i++)
                     materialArray.push(new THREE.MeshBasicMaterial({
-                        map:  remoteData.skbxImg[i],
+                        map: remoteData.skbxImg[i],
                         side: THREE.BackSide
                     }));
                 skyBox = new THREE.Mesh(skyGeometry, new THREE.MeshFaceMaterial(materialArray));
@@ -228,8 +229,8 @@ var App = function (name) {
                 requestAnimationFrame(utils.methods.animate);
                 utils.methods.render();
             },
-            setInfo:function(data){
-                if(window.parent.loader)window.parent.loader(true);
+            setInfo: function (data) {
+                //if(window.parent.loader)window.parent.loader(true);
                 var img = document.createElement('img');
                 img.src = data.img;
                 var myNode = document.getElementById("Show_texture");
@@ -237,10 +238,10 @@ var App = function (name) {
                     myNode.removeChild(myNode.firstChild);
                 }
                 myNode.appendChild(img);
-                if(window.parent.loader)window.parent.loader(false);
+                if (window.parent.loader)window.parent.loader(false);
             },
-            setVisible:function(type,val){
-                switch (type){
+            setVisible: function (type, val) {
+                switch (type) {
                     case 'length':
                     {
                         App.const.curRoomL = val;
@@ -269,7 +270,8 @@ var App = function (name) {
 
                         }
                         countUnvis.onWidth = Math.round(countUnVisi / (App.const.countTiles.onHeight.max));
-                    }break;
+                    }
+                        break;
                     case 'height':
                     {
                         App.const.curRoomH = val;
@@ -297,7 +299,8 @@ var App = function (name) {
 
                         }
                         countUnvis.onHeight = Math.round(countUnVisi / (App.const.countTiles.onWidth.max));
-                    }break;
+                    }
+                        break;
                 }
             }
 
@@ -324,23 +327,23 @@ var App = function (name) {
             gui: null,
             fizzyText: {
                 loadImg: function () {
-                    if(window.parent.loader)window.parent.loader(true);
+                    if (window.parent.loader)window.parent.loader(true);
                     $('#loadTexture').click();
                 },
                 getTextures: function () {
-                    if(window.parent.loader)window.parent.loader(true);
-                    var filename='textures.zip', strMime = "image/jpeg";
+                    if (window.parent.loader)window.parent.loader(true);
+                    var filename = 'textures.zip', strMime = "image/jpeg";
                     var zip = new JSZip();
                     zip.file("README.txt", "Hello World\n");
                     var img = zip.folder("images");
-                    for(var i=0;i< saveData.length;i++){
+                    for (var i = 0; i < saveData.length; i++) {
                         var sd = saveData[i].toDataURL();
-                            img.file("texture"+i+".jpg",sd.substr(sd.indexOf(',')+1), {base64: true});
+                        img.file("texture" + i + ".jpg", sd.substr(sd.indexOf(',') + 1), {base64: true});
 
                     }
-                    var content = zip.generate({type:"blob"});
-                    saveAs(content, filename );
-                    if(window.parent.loader)window.parent.loader(false);
+                    var content = zip.generate({type: "blob"});
+                    saveAs(content, filename);
+                    if (window.parent.loader)window.parent.loader(false);
                 },
                 roomL: App.const.curRoomL,
                 roomH: App.const.curRoomH,
@@ -366,7 +369,7 @@ var App = function (name) {
                 //webglElem.wall_fill_f.scale.x = val / (maxLength / 2);
                 //webglElem.floor.scale.x = val / (maxLength / 2);
                 //webglElem.wall_fill_f.position.x = webglElem.floor.position.x = (val / (maxLength / 2)) * (30) - 30;
-                utils.methods.setVisible('length',val);
+                utils.methods.setVisible('length', val);
 
             });
             var minHeight = App.const.minHeight, maxHeight = App.const.maxHeight;
@@ -374,7 +377,7 @@ var App = function (name) {
                 //webglElem.wall_fill_f.scale.y = val / minHeight;
                 //webglElem.wall_fill_s.scale.y = val / minHeight;
                 //webglElem.wall_fill_f.position.y = webglElem.wall_fill_s.position.y = (val / minHeight) * (15) - 15;
-                utils.methods.setVisible('height',val);
+                utils.methods.setVisible('height', val);
             });
             var tillSize = [100, 800];
             tillEdit.add(fizzyText, 'tileL', tillSize[0], tillSize[1]).step(50).name('Till Length(mm)').onChange(function (val) {
@@ -429,8 +432,8 @@ var App = function (name) {
             });
             guiSettings.add(fizzyText, 'loadImg').name('Load Texture');
             guiSettings.add(fizzyText, 'getTextures').name('Get Textures');
-            //$(".hue-field").width(10);
-            //$("select").css('color', 'black');
+            $(".hue-field").width(10);
+            $("select").css('color', 'black');
         }
     }
     var tilles = {
@@ -439,21 +442,21 @@ var App = function (name) {
                 tileLength = parseInt(curTillSize[0]),
                 tileHeight = parseInt(curTillSize[1]),
                 countOfWallTilByLength = {
-                    max: App.const.maxLength / tileLength,
-                    cur: Math.floor(App.const.curRoomL / tileLength)
+                    max: Math.round(App.const.maxLength / tileLength),
+                    cur: Math.round(Math.floor(App.const.curRoomL / tileLength))
                 },
                 countOfWallTilByHeight = {
-                    max: App.const.maxHeight / tileHeight,
-                    cur: Math.floor(App.const.curRoomH / tileHeight)
+                    max: Math.round(App.const.maxHeight / tileHeight),
+                    cur: Math.round(Math.floor(App.const.curRoomH / tileHeight))
                 },
                 strP = {x: -30, y: 15, z: -15, scl: 100}, stepL = 0, stepH, exp = 1,
                 fill = App.const.fill, stepL = 0;
 
             //clear scene
-            if(webglElem.till_object){
+            if (webglElem.till_object) {
                 webglElem.scene.remove(webglElem.till_object);
-                webglElem.tiles.wallS.byL =[];
-                webglElem.tiles.wallS.byH =[];
+                webglElem.tiles.wallS.byL = [];
+                webglElem.tiles.wallS.byH = [];
             }
             webglElem.till_object = new THREE.Object3D();
             webglElem.scene.add(webglElem.till_object);
@@ -509,9 +512,9 @@ var App = function (name) {
             }
             App.const.countTiles = {onWidth: countOfWallTilByLength, onHeight: countOfWallTilByHeight};
 
-            utils.methods.setVisible()
-            utils.methods.setInfo({img:saveData[0].toDataURL()});
-            utils.methods.setInfo({img:saveData[0].toDataURL()});
+            utils.methods.setVisible('length', App.const.curRoomL);
+            utils.methods.setVisible('height', App.const.curRoomH);
+            utils.methods.setInfo({img: saveData[0].toDataURL()});
         },
         createPlate: function (par, textures) {
             var material;
@@ -533,7 +536,7 @@ var App = function (name) {
             webglElem.tiles.wallS.byL.push(tile);
 
         },
-        textureLoad: function (callback,src) {
+        textureLoad: function (callback, src) {
             var myImage = new Image(), textures = [];
             myImage.src = src;
             myImage.onload = function () {
@@ -571,7 +574,7 @@ var App = function (name) {
                  }*/
                 //console.log(App);
                 tilles.rebuild('', canvasM);
-                if(callback instanceof Function) callback();
+                if (callback instanceof Function) callback();
 
             }
 
@@ -616,11 +619,11 @@ var App = function (name) {
     var strt = function () {
         gui.init();
         utils.methods.init();
-        tilles.textureLoad(tilles.createFilled,'data/img/plita.jpg');
+        tilles.textureLoad(tilles.createFilled, 'data/img/plita.jpg');
         utils.methods.animate();
     }
     var ImgData = function (listOfimg) {
-        THREE.ImageUtils.loadTexture( 'data/img/skybox/'+listOfimg.shift(),THREE.CubeReflectionMapping,function (data) {
+        THREE.ImageUtils.loadTexture('data/img/skybox/' + listOfimg.shift(), THREE.CubeReflectionMapping, function (data) {
             remoteData.skbxImg.push(data);
             if (listOfimg.length) {
                 ImgData(listOfimg);
@@ -657,7 +660,7 @@ App.const = {
     curWalTil: '500*800',
     curFloorTil: '500*500',
     curRoomL: 3000,
-    curRoomH: 2800,
+    curRoomH: 2900,
     minLength: 1000,
     maxLength: 6000,
     minHeight: 1600,
@@ -711,12 +714,12 @@ $(document).ready(function () {
     //setTimeout(function () {
     var thhreejsApp = new App('plate');
 
-    $( "#clickme" ).click(function() {
-        $( "#Show_texture" ).slideToggle( "slow", function() {
+    $("#clickme").click(function () {
+        $("#Show_texture").slideToggle("slow", function () {
         });
     });
-    $( "#aminInf" ).click(function() {
-        $( "#tog" ).slideToggle( "slow", function() {
+    $("#aminInf").click(function () {
+        $("#tog").slideToggle("slow", function () {
         });
     });
     /*$("#container_image").PictureCut({

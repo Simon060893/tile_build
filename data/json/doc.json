@@ -8,8 +8,8 @@
   {
     "nameCompany": "Name1",
     "nameCompany": "Name1",
-    "nameCompany": "Name1",
-    "nameCompany": "Name1"
+    "nameCompany": "data/img/name.png",
+    "nameCompany": ["#0971232","#0971232","#0971232","#097123"]
   },
   {
     "nameCompany": "Name1",

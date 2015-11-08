@@ -78,6 +78,8 @@ label{
     position: relative;
     width: 100%;
     overflow: auto;
+    overflow: auto;
+    max-height: 80px;
 }
 .form-horizontal,.form-control[disabled]{
     font-size: 12px!important;
