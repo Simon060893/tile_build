@@ -20,6 +20,13 @@
     $('iframe#myid').load(function () {
         $(".container-loader").fadeOut();
     });
+    function loader(flag){
+        if(flag){
+            $(".container-loader").fadeIn('slow');
+        }else{
+            $(".container-loader").fadeOut();
+        }
+    }
 </script>
 <!--<script type="text/paperscript" canvas="texture">
 // Create a raster item using the image tag with id='mona'

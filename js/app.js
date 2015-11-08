@@ -1,7 +1,8 @@
 var App = function (name) {
     var webglElem = {tiles: {wallF: [], wallS: {byL: [], byH: []}, floor: []}},
         remoteData = { skbxImg: []},
-        saveData=[];
+        saveData=[],
+        countUnvis = {onWidth: 0, onHeight: 0};;
     var utils = {
         events: {
             onWindowResize: function () {
@@ -16,7 +17,9 @@ var App = function (name) {
                     canvasH = $(canvas).height(), mouseVector = {}, lastInters = webglElem.lastInters;
                 $(canvas).css('cursor', 'auto');
                 if (lastInters) {
-                    lastInters.object.position.z = lastInters.object.lastPos ? lastInters.object.lastPos : lastInters.object.position.z;
+                    lastInters.object.position.z = lastInters.object.lastPos ? lastInters.object.lastPos+0 : lastInters.object.position.z;
+                    lastInters.object.lastPos=false;
+                    lastInters.object.remove( webglElem.pSystem) ;
                 }
                 mouseVector.x = ( (event.clientX - canvas.offsetLeft + 1) / canvasW) * 2 - 1;
                 mouseVector.y = -( (event.clientY - canvas.offsetTop) / canvasH) * 2 + 1;
@@ -30,8 +33,9 @@ var App = function (name) {
                                 webglElem.sounds[0].play()
                             }
                             webglElem.lastInters = lastInters;
-                            lastInters.object.position.z += 0.5;
+                            lastInters.object.position.z += 1.5;
                             $(canvas).css('cursor', 'pointer');
+                            lastInters.object.add(webglElem.pSystem);
                         }
                     }
                 }
@@ -49,10 +53,11 @@ var App = function (name) {
                             var tgt = evt.target || window.event.srcElement,
                                 files = tgt.files;
                             var fr = new FileReader();
-                            fr.readAsDataURL(files[0]);
+                             fr.readAsDataURL(files[0]);
                             fr.onload = function () {
                                 $('#' + App.const.loadImageText).attr('src', fr.result);
-                                setTimeout(function () {
+                                tilles.textureLoad(false,fr.result);
+                            /*    setTimeout(function () {
                                     var size = $('#' + App.const.loadImageText)[0].height;
                                     App.resetTexture(size);
                                     setTimeout(function () {
@@ -68,13 +73,23 @@ var App = function (name) {
                                             }
                                         }
                                     }, 100);
-                                }, 100);
+                                }, 100);*/
                             }
                         } else {
                             arert('update your browser');
+                            if(window.parent.loader)window.parent.loader(false);
                         }
+                    }else{
+                        arert('it\'s seems you didn\'t load an image!!!');
+                        if(window.parent.loader)window.parent.loader(false);
                     }
                 });
+            },
+            onMouseUp:function(event){
+                event.preventDefault();
+                if(webglElem.lastInters && webglElem.lastInters.object.lastPos){
+                    utils.methods.setInfo({img:webglElem.lastInters.object.material.map.image.toDataURL()});
+                }
             }
         },
         methods: {
@@ -89,6 +104,7 @@ var App = function (name) {
                 container.style.zIndex = 1;
                 webglElem.container = container;
                 document.body.appendChild(container);
+
                 //create render
                 gl = new THREE.WebGLRenderer({antialiasing: true, alpha: true, antialias: true});
                 gl.setClearColor(0x000000, 1);
@@ -102,18 +118,51 @@ var App = function (name) {
                 container.appendChild(gl.domElement);
                 webglElem.gl = gl;
 
+                // STATS
+                //var stats = new Stats();
+                //container.appendChild( stats.domElement );
+
                 //ray
                 webglElem.projector = new THREE.Raycaster();
 
                 //sounds
-                var sound1 = new Sound(['data/sounds/A.mp3']);
+                var sound1 = new Sound(['data/sounds/Electronic_Drop-spaces.ru.mp3']);
                 webglElem.sounds = [sound1];
 
-
+                //effect material
+                var pMaterial = new THREE.PointCloudMaterial({
+                    color: 0xfff000,
+                    size: 100.5,
+                    map: THREE.ImageUtils.loadTexture(
+                        "data/img/particleA.png"
+                    ),
+                    blending: THREE.AdditiveBlending,
+                    depthTest: false,
+                    opacity: 0.6,
+                    transparent: true
+                });
+                var particlesGeo = new THREE.Geometry();
+                particlesGeo.vertices.push(new THREE.Vector3(0, 0, 0));
+                var pSystem = new THREE.PointCloud(particlesGeo, pMaterial);
+                pSystem.dynamic = true;
+                pSystem.sortParticles = true;
+                webglElem.pSystem = pSystem;
 
                 //create scene
                 scene = new THREE.Scene();
                 webglElem.scene = scene;
+
+                //lights
+                // LIGHTS
+
+                var ambiLight = new THREE.AmbientLight(0x111111);
+                scene.add(ambiLight);
+                var spotLight = new THREE.DirectionalLight(0xffffff);
+                spotLight.position.set(10, 10, 10);
+                spotLight.intensity = 1.5;
+                scene.add(spotLight);
+                spotLight.shadowCameraVisible = true;
+
                 //skybox
                 var materialArray = [],
                     skyGeometry = new THREE.BoxGeometry(500, 500, 500), skyBox;
@@ -167,8 +216,9 @@ var App = function (name) {
                 utils.events.onTextureLoadL();
                 controls.addEventListener('change', this.render);
                 window.addEventListener('resize', utils.events.onWindowResize, false);
-                window.addEventListener('mousemove', utils.events.onMouseMove, false);
-                window.addEventListener('dblclick', utils.events.onDoubleClick, false);
+                gl.domElement.addEventListener('mousemove', utils.events.onMouseMove, false);
+                gl.domElement.addEventListener('dblclick', utils.events.onDoubleClick, false);
+                gl.domElement.addEventListener('mouseup', utils.events.onMouseUp, false);
             },
             render: function () {
                 webglElem.gl.render(webglElem.scene, webglElem.camera);
@@ -177,7 +227,80 @@ var App = function (name) {
                 webglElem.controls.update();
                 requestAnimationFrame(utils.methods.animate);
                 utils.methods.render();
+            },
+            setInfo:function(data){
+                if(window.parent.loader)window.parent.loader(true);
+                var img = document.createElement('img');
+                img.src = data.img;
+                var myNode = document.getElementById("Show_texture");
+                while (myNode.firstChild) {
+                    myNode.removeChild(myNode.firstChild);
+                }
+                myNode.appendChild(img);
+                if(window.parent.loader)window.parent.loader(false);
+            },
+            setVisible:function(type,val){
+                switch (type){
+                    case 'length':
+                    {
+                        App.const.curRoomL = val;
+                        var cur = App.const.curWalTil.split('*'),
+                            maxLVisEl = val / parseInt(cur[0]),
+                            maxHVisEl = val / parseInt(cur[1]),
+                            visibleEl = maxLVisEl * maxHVisEl;
+                        var curWallTil = webglElem.tiles.wallS.byL;
+                        var maxHeight = countUnvis.onHeight + 0, widthStep = App.const.countTiles.onHeight.max + 0, c = 0, flag = false, countUnVisi = 0;
+                        for (var i = 0; i < curWallTil.length; i++) {
+                            if (i >= c && i < maxHeight) {
+                                flag = true;
+                            } else {
+                                if (flag) {
+                                    flag = false;
+                                    c += widthStep;
+                                    maxHeight += widthStep;
+                                }
+                                if (i < visibleEl) {
+                                    curWallTil[i].visible = true;
+                                } else {
+                                    curWallTil[i].visible = false;
+                                    countUnVisi++;
+                                }
+                            }
+
+                        }
+                        countUnvis.onWidth = Math.round(countUnVisi / (App.const.countTiles.onHeight.max));
+                    }break;
+                    case 'height':
+                    {
+                        App.const.curRoomH = val;
+                        var cur = App.const.curWalTil.split('*'),
+                            maxLVisEl = (val) / parseInt(cur[0]),
+                            maxHVisEl = (2 * val) / parseInt(cur[1]),
+                            visibleEl = maxLVisEl * maxHVisEl;
+                        var maxLength = App.const.countTiles.onWidth.max + 0, lengthStep = maxLength + 0, flag = false, countUnVisi = 0;
+                        var curWallTil = webglElem.tiles.wallS.byH;
+                        for (var i = 0; i < curWallTil.length; i++) {
+                            if (i >= (maxLength - countUnvis.onWidth) && i < maxLength) {
+                                flag = true;
+                            } else {
+                                if (flag) {
+                                    flag = false;
+                                    maxLength += lengthStep;
+                                }
+                                if (i < visibleEl) {
+                                    curWallTil[i].visible = true;
+                                } else {
+                                    curWallTil[i].visible = false;
+                                    countUnVisi++;
+                                }
+                            }
+
+                        }
+                        countUnvis.onHeight = Math.round(countUnVisi / (App.const.countTiles.onWidth.max));
+                    }break;
+                }
             }
+
         }
     }
     var Sound = function (sources) {
@@ -201,9 +324,11 @@ var App = function (name) {
             gui: null,
             fizzyText: {
                 loadImg: function () {
+                    if(window.parent.loader)window.parent.loader(true);
                     $('#loadTexture').click();
                 },
                 getTextures: function () {
+                    if(window.parent.loader)window.parent.loader(true);
                     var filename='textures.zip', strMime = "image/jpeg";
                     var zip = new JSZip();
                     zip.file("README.txt", "Hello World\n");
@@ -214,7 +339,8 @@ var App = function (name) {
 
                     }
                     var content = zip.generate({type:"blob"});
-                    saveAs(content, filename);
+                    saveAs(content, filename );
+                    if(window.parent.loader)window.parent.loader(false);
                 },
                 roomL: App.const.curRoomL,
                 roomH: App.const.curRoomH,
@@ -228,7 +354,6 @@ var App = function (name) {
         init: function () {
             var gui = this.fields.gui = new dat.GUI({width: 350}), fizzyText = this.fields.fizzyText;
             // Text field
-            var countUnvis = {onWidth: 0, onHeight: 0};
             var guiSettings = gui.addFolder('Entire texture');
             var roomEdit = guiSettings.addFolder('Room Size');
             var tillEdit = guiSettings.addFolder('Till Size');
@@ -238,68 +363,18 @@ var App = function (name) {
             var minLength = App.const.minLength, maxLength = App.const.maxLength;
             roomEdit.add(fizzyText, 'roomL', minLength, maxLength).step(100).name('Room Length(mm)').onChange(function (val) {
                 //var cur = val / (maxLength / 2);
-                App.const.curRoomL = val;
-                webglElem.wall_fill_f.scale.x = val / (maxLength / 2);
-                webglElem.floor.scale.x = val / (maxLength / 2);
-                webglElem.wall_fill_f.position.x = webglElem.floor.position.x = (val / (maxLength / 2)) * (30) - 30;
-                var cur = App.const.curWalTil.split('*'),
-                    maxLVisEl = val / parseInt(cur[0]),
-                    maxHVisEl = val / parseInt(cur[1]),
-                    visibleEl = maxLVisEl * maxHVisEl;
-                var curWallTil = webglElem.tiles.wallS.byL;
-                var maxHeight = countUnvis.onHeight + 0, widthStep = App.const.countTiles.onHeight.max + 0, c = 0, flag = false, countUnVisi = 0;
-                for (var i = 0; i < curWallTil.length; i++) {
-                    if (i >= c && i < maxHeight) {
-                        flag = true;
-                    } else {
-                        if (flag) {
-                            flag = false;
-                            c += widthStep;
-                            maxHeight += widthStep;
-                        }
-                        if (i < visibleEl) {
-                            curWallTil[i].visible = true;
-                        } else {
-                            curWallTil[i].visible = false;
-                            countUnVisi++;
-                        }
-                    }
-
-                }
-                countUnvis.onWidth = Math.round(countUnVisi / (App.const.countTiles.onHeight.max));
+                //webglElem.wall_fill_f.scale.x = val / (maxLength / 2);
+                //webglElem.floor.scale.x = val / (maxLength / 2);
+                //webglElem.wall_fill_f.position.x = webglElem.floor.position.x = (val / (maxLength / 2)) * (30) - 30;
+                utils.methods.setVisible('length',val);
 
             });
             var minHeight = App.const.minHeight, maxHeight = App.const.maxHeight;
             roomEdit.add(fizzyText, 'roomH', minHeight, maxHeight).step(100).name('Room Hight(mm)').onChange(function (val) {
-                webglElem.wall_fill_f.scale.y = val / minHeight;
-                webglElem.wall_fill_s.scale.y = val / minHeight;
-                webglElem.wall_fill_f.position.y = webglElem.wall_fill_s.position.y = (val / minHeight) * (15) - 15;
-
-                App.const.curRoomH = val;
-                var cur = App.const.curWalTil.split('*'),
-                    maxLVisEl = (val) / parseInt(cur[0]),
-                    maxHVisEl = (2 * val) / parseInt(cur[1]),
-                    visibleEl = maxLVisEl * maxHVisEl;
-                var maxLength = App.const.countTiles.onWidth.max + 0, lengthStep = maxLength + 0, flag = false, countUnVisi = 0;
-                var curWallTil = webglElem.tiles.wallS.byH;
-                for (var i = 0; i < curWallTil.length; i++) {
-                    if (i >= (maxLength - countUnvis.onWidth) && i < maxLength) {
-                        flag = true;
-                    } else {
-                        if (flag) {
-                            flag = false;
-                            maxLength += lengthStep;
-                        }
-                        if (i < visibleEl) {
-                            curWallTil[i].visible = true;
-                        } else {
-                            curWallTil[i].visible = false;
-                            countUnVisi++;
-                        }
-                    }
-
-                }
-                countUnvis.onHeight = Math.round(countUnVisi / (App.const.countTiles.onWidth.max));
+                //webglElem.wall_fill_f.scale.y = val / minHeight;
+                //webglElem.wall_fill_s.scale.y = val / minHeight;
+                //webglElem.wall_fill_f.position.y = webglElem.wall_fill_s.position.y = (val / minHeight) * (15) - 15;
+                utils.methods.setVisible('height',val);
             });
             var tillSize = [100, 800];
             tillEdit.add(fizzyText, 'tileL', tillSize[0], tillSize[1]).step(50).name('Till Length(mm)').onChange(function (val) {
@@ -377,6 +452,8 @@ var App = function (name) {
             //clear scene
             if(webglElem.till_object){
                 webglElem.scene.remove(webglElem.till_object);
+                webglElem.tiles.wallS.byL =[];
+                webglElem.tiles.wallS.byH =[];
             }
             webglElem.till_object = new THREE.Object3D();
             webglElem.scene.add(webglElem.till_object);
@@ -431,6 +508,10 @@ var App = function (name) {
                 k--;
             }
             App.const.countTiles = {onWidth: countOfWallTilByLength, onHeight: countOfWallTilByHeight};
+
+            utils.methods.setVisible()
+            utils.methods.setInfo({img:saveData[0].toDataURL()});
+            utils.methods.setInfo({img:saveData[0].toDataURL()});
         },
         createPlate: function (par, textures) {
             var material;
@@ -444,6 +525,7 @@ var App = function (name) {
             }
             var tile = new THREE.Mesh(new THREE.PlaneGeometry(par.width, par.height), material);
             tile.typ = par.type;
+            tile.castShadow = true;
             tile.position.z = par.pos.z//-14.5;
             tile.position.y = par.pos.y//-14.5;
             tile.position.x = par.pos.x//-29.5;
@@ -496,9 +578,10 @@ var App = function (name) {
         },
         createFilled: function () {
             var roomLeng = App.const.countTiles.onWidth.max * App.const.fill, roomH = App.const.countTiles.onHeight.max * App.const.fill;
-            webglElem.wall_fill_f = new THREE.Mesh(new THREE.PlaneGeometry(60 + roomLeng, 30 + roomH), new THREE.MeshBasicMaterial({color: '#a92e0f'}));
+            webglElem.wall_fill_f = new THREE.Mesh(new THREE.PlaneGeometry(62 + roomLeng, 34 + roomH), new THREE.MeshBasicMaterial({color: '#a92e0f'}));
             webglElem.wall_fill_f.typ = 'wall';
             webglElem.wall_fill_f.position.z = -15.001 - roomH / 2;
+            webglElem.wall_fill_f.receiveShadow = true;
             webglElem.fill_object.add(webglElem.wall_fill_f);
             webglElem.wall_fill_s = new THREE.Mesh(new THREE.PlaneGeometry(30 + (roomLeng / 2), 30 + roomH), new THREE.MeshBasicMaterial({color: '#a92e0f'}));
             webglElem.wall_fill_s.typ = 'wall';
@@ -562,7 +645,7 @@ App.const = {
         '300*900',
     ],
     plitaFollrSize: [
-        '200*200',
+        '500*800',
         ' 275*400',
         '275*602',
         '300*600',
@@ -627,6 +710,15 @@ $(document).ready(function () {
     //App.resetTexture();
     //setTimeout(function () {
     var thhreejsApp = new App('plate');
+
+    $( "#clickme" ).click(function() {
+        $( "#Show_texture" ).slideToggle( "slow", function() {
+        });
+    });
+    $( "#aminInf" ).click(function() {
+        $( "#tog" ).slideToggle( "slow", function() {
+        });
+    });
     /*$("#container_image").PictureCut({
      InputOfImageDirectory       : "img",
      PluginFolderOnServer        : "js/libs/jQuery-Picture-Cut-master/",
