@@ -4,13 +4,16 @@ var App = function (name) {
         saveData = [],
         countUnvis = {onWidth: 0, onHeight: 0};
     ;
+    this.werbObj = webglElem;
     var utils = {
         events: {
             onWindowResize: function () {
-                webglElem.camera.aspect = window.innerWidth / window.innerHeight;
+                var w =window.innerWidth,// $('#'+App.const.containerName).width(),
+                    h = window.innerHeight-6;//$('#'+App.const.containerName).height();
+                webglElem.camera.aspect = w / h;
                 webglElem.controls.handleResize();
                 webglElem.camera.updateProjectionMatrix();
-                webglElem.gl.setSize(window.innerWidth, window.innerHeight);
+                webglElem.gl.setSize(w,h);//window.innerWidth, window.innerHeight
             },
             onMouseMove: function (event) {
                 event.preventDefault();
@@ -99,8 +102,10 @@ var App = function (name) {
                 container = document.createElement('div');
                 container.id = name;
                 container.style.position = 'absolute';
-                container.style.top = 0;
-                container.style.left = 0;
+                //container.style.top = 0;
+                //container.style.left = 0;
+                container.style.widht = '100%';
+                container.style.height = '100%';
                 App.const.containerName = name;
                 container.style.zIndex = 1;
                 webglElem.container = container;
@@ -109,7 +114,7 @@ var App = function (name) {
                 //create render
                 gl = new THREE.WebGLRenderer({antialiasing: true, alpha: true, antialias: true});
                 gl.setClearColor(0x000000, 1);
-                gl.setSize(window.innerWidth, window.innerHeight);
+                gl.setSize(window.innerWidth, window.innerHeight-6);
                 gl.gammaInput = true;
                 gl.gammaOutput = true;
                 gl.sortObjects = false;
@@ -722,6 +727,12 @@ $(document).ready(function () {
         $("#tog").slideToggle("slow", function () {
         });
     });
+/*setTimeout(function(){
+    var w = $('#'+App.const.containerName).width(),h =$('#'+App.const.containerName).height();
+    thhreejsApp.werbObj.gl.setSize(w,h);
+    thhreejsApp.werbObj.camera.aspect = w / h;
+},1000)*/
+
     /*$("#container_image").PictureCut({
      InputOfImageDirectory       : "img",
      PluginFolderOnServer        : "js/libs/jQuery-Picture-Cut-master/",
