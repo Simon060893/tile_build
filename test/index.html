@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html ng-app="comments"  >
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        @import url(//fonts.googleapis.com/css?family=Ubuntu:300,700);
+        * {
+            margin: 0;
+            padding: 0;
+            background: scroll transparent none 0 0 repeat;
+            border: 0 none #000;
+            outline: 0 none #000;
+            border-radius: 0;
+            box-shadow: none;
+            color: inherit;
+            font-family: inherit;
+            font-size: inherit;
+            font-style: inherit;
+            font-variant: inherit;
+            font-weight: inherit;
+            text-align: inherit;
+            text-decoration: inherit;
+            text-transform: inherit;
+            line-height: inherit;
+            vertical-align: top;
+            z-index: inherit;
+            cursor: inherit;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        *,
+        *:before,
+        *:after {
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #fff;
+            color: #000;
+            font-size: 16px;
+            font-family: sans-serif;
+            text-align: left;
+            line-height: 1.4;
+            z-index: 0;
+            cursor: default;
+        }
+
+        input,
+        textarea {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+            cursor: text;
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
+        }
+
+        a,
+        button,
+        [type="button"],
+        [type="checkbox"],
+        [type="radio"],
+        [for] {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: pointer;
+        }
+
+        input[disabled],
+        select[disabled],
+        textarea[disabled],
+        button[disabled] {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            cursor: not-allowed;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            background: #eee;
+            font-family: Ubuntu, sans-serif;
+            font-weight: 300;
+        }
+
+        body {
+            max-width: 840px;
+        }
+
+        ul {
+            padding-left: 80px;
+            list-style: none;
+        }
+        ul li {
+            background: #fff;
+            border-radius: 2px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        ul li:not(:first-child) {
+            margin-top: 20px;
+        }
+        ul li:before {
+            content: "";
+            border-width: 10px 10px 10px 0;
+            border-style: solid;
+            border-color: transparent #fff;
+            position: absolute;
+            top: 10px;
+            left: -10px;
+        }
+        ul li header {
+            border-bottom: 1px solid #e5e5e5;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+        }
+        ul li header * {
+            display: block;
+        }
+        ul li header h1 {
+            padding-left: 20px;
+            font-weight: normal;
+            line-height: 40px;
+            -webkit-box-flex: 1;
+            -webkit-flex-grow: 1;
+            -ms-flex-positive: 1;
+            flex-grow: 1;
+        }
+        ul li header h1 a {
+            text-decoration: none;
+            display: inline-block;
+        }
+        ul li header h1.author, ul li header h1.author * {
+            color: #9a3;
+        }
+        ul li header h1.author:after {
+            content: "Author";
+            margin: 10px 0 10px 10px;
+            padding: 0 5px;
+            background: #9a3;
+            border-radius: 2px;
+            color: #fff;
+            font-size: 10px;
+            font-weight: normal;
+            text-transform: uppercase;
+            line-height: 20px;
+            position: absolute;
+        }
+        ul li header button {
+            padding: 10px;
+        }
+        ul li header button svg {
+            width: 20px;
+            height: 20px;
+        }
+        ul li header button svg * {
+            fill: #999;
+        }
+        ul li header button:hover svg * {
+            fill: #666;
+        }
+        ul li header button.loved svg * {
+            fill: #f66;
+        }
+        ul li header img {
+            width: 60px;
+            height: 60px;
+            background: #fff;
+            border: 4px solid #fff;
+            border-radius: 2px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            top: 0;
+            left: -80px;
+        }
+        ul li article {
+            padding: 20px;
+            white-space: pre-line;
+            overflow-x: hidden;
+        }
+        ul li article .reply {
+            color: #9a3;
+        }
+        ul li article strong {
+            font-weight: 500;
+        }
+        ul li article em {
+            font-style: italic;
+        }
+        ul li article a {
+            text-decoration: underline;
+        }
+        ul li article a:hover {
+            text-decoration: none;
+        }
+        ul li article code {
+            font-family: "Source Code Pro", monospace;
+        }
+
+        form {
+            margin-top: 20px;
+            padding: 20px 20px 20px 100px;
+            background: #fff;
+            border-radius: 2px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            position: relative;
+            -webkit-flex-wrap: wrap;
+            -ms-flex-wrap: wrap;
+            flex-wrap: wrap;
+            display: -webkit-box;
+            display: -webkit-flex;
+            display: -ms-flexbox;
+            display: flex;
+        }
+        form:before {
+            content: "";
+            border-width: 10px 10px 10px 0;
+            border-style: solid;
+            border-color: transparent rgba(229, 229, 229, 0.5);
+            position: absolute;
+            top: 30px;
+            left: 90px;
+        }
+        form input,
+        form textarea {
+            padding: 9px 20px;
+            width: 100%;
+            background: rgba(229, 229, 229, 0.5);
+            display: block;
+        }
+        form input:not(:first-child),
+        form textarea:not(:first-child) {
+            margin-top: 2px;
+        }
+        form input[type='email'],
+        form textarea[type='email'] {
+            width: 50%;
+            border-right: 1px solid #fff;
+        }
+        form input[type='url'],
+        form textarea[type='url'] {
+            width: 50%;
+            border-left: 1px solid #fff;
+        }
+        form input::-webkit-input-placeholder,
+        form textarea::-webkit-input-placeholder {
+            color: #666;
+        }
+        form input::-moz-placeholder,
+        form textarea::-moz-placeholder {
+            color: #666;
+        }
+        form input:-ms-input-placeholder,
+        form textarea:-ms-input-placeholder {
+            color: #666;
+        }
+        form input::placeholder,
+        form textarea::placeholder {
+            color: #666;
+        }
+        form input.ng-dirty.ng-invalid, form input.ng-dirty.ng-invalid::-webkit-input-placeholder,
+        form textarea.ng-dirty.ng-invalid,
+        form textarea.ng-dirty.ng-invalid::-webkit-input-placeholder {
+            color: #f66;
+        }
+        form input.ng-dirty.ng-invalid, form input.ng-dirty.ng-invalid::-moz-placeholder,
+        form textarea.ng-dirty.ng-invalid,
+        form textarea.ng-dirty.ng-invalid::-moz-placeholder {
+            color: #f66;
+        }
+        form input.ng-dirty.ng-invalid, form input.ng-dirty.ng-invalid:-ms-input-placeholder,
+        form textarea.ng-dirty.ng-invalid,
+        form textarea.ng-dirty.ng-invalid:-ms-input-placeholder {
+            color: #f66;
+        }
+        form input.ng-dirty.ng-invalid, form input.ng-dirty.ng-invalid::placeholder,
+        form textarea.ng-dirty.ng-invalid,
+        form textarea.ng-dirty.ng-invalid::placeholder {
+            color: #f66;
+        }
+        form textarea {
+            padding: 20px;
+            height: 120px;
+            resize: none;
+        }
+        form p {
+            margin-top: 10px;
+            padding: 10px 0;
+            width: 50%;
+        }
+        form p a {
+            text-decoration: underline;
+        }
+        form p a:hover {
+            text-decoration: none;
+        }
+        form button {
+            margin: 10px auto 0;
+            padding: 10px 0;
+            width: 50%;
+            background: #9a3;
+            border-radius: 2px;
+            color: #fff;
+            font-weight: normal;
+            text-align: center;
+            display: block;
+        }
+        form img {
+            width: 60px;
+            height: 60px;
+            background: rgba(229, 229, 229, 0.5);
+            border: 4px solid rgba(229, 229, 229, 0.5);
+            border-radius: 2px;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+        }
+
+        @media (max-width: 440px) {
+            ul {
+                padding: 0;
+            }
+            ul li:before {
+                content: none;
+            }
+            ul li header img {
+                clip: rect(0, 0, 0, 0);
+            }
+            ul li header h1.author:after {
+                content: none;
+            }
+
+            form {
+                padding-left: 20px;
+            }
+            form:before {
+                content: none;
+            }
+            form img {
+                clip: rect(0, 0, 0, 0);
+            }
+            form input,
+            form textarea {
+                padding: 10px;
+            }
+            form textarea {
+                height: 80px;
+            }
+            form p,
+            form button {
+                margin: 10px 10px 0;
+                width: 100%;
+            }
+            form p {
+                padding: 0;
+            }
+        }
+
+    </style>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.3.2/angular.min.js"></script>
+    <script src="//www.myersdaily.org/joseph/javascript/md5.js"></script>
+    <!--<script src="//plugins.pawelski.io/ripple.min.js"></script>-->
+    <script>
+        (function () {
+            angular.module('comments', []).controller('commentsCtrl', function ($scope, $sce) {
+                var markdown, postAuthorEmail;
+                postAuthorEmail = 'jan.kanty.pawelski@gmail.com';
+                $scope.comments = [
+                    {
+                        id: 1,
+                        author: {
+                            name: 'Jan-Kanty Pawelski',
+                            email: 'jan.kanty.pawelski@gmail.com',
+                            website: 'pawelski.io'
+                        },
+                        content: 'I made it! My awesome angular comment system. What do you think?',
+                        loved: false
+                    },
+                    {
+                        id: 2,
+                        author: {
+                            name: 'Tomasz Jakut',
+                            email: 'comandeer@comandeer.pl',
+                            website: 'comandeer.pl'
+                        },
+                        content: 'Nice looking. Good job dude ;)',
+                        loved: true
+                    },
+                    {
+                        id: 3,
+                        author: {
+                            name: 'Jan-Kanty Pawelski',
+                            email: 'jan.kanty.pawelski@gmail.com',
+                            website: 'pawelski.io'
+                        },
+                        content: '<span class="reply">@Tomasz Jakut</span> Thanks man. I tried hard.',
+                        loved: false
+                    },
+                    {
+                        id: 4,
+                        author: {
+                            name: 'Grzegorz B\u0105k',
+                            email: 'szary.elf@gmail.com',
+                            website: 'gregbak.com'
+                        },
+                        content: 'Third! Amazing system man! By the way check my new website: <a href="//gregbak.com">http://gregbak.com</a>.',
+                        loved: false
+                    }
+                ];
+                $scope.newComment = {};
+                markdown = function (string) {
+                    string = string.replace(/(@.+)@/g, '<span class="reply">$1</span>');
+                    string = string.replace(/\*\*(.+)\*\*/g, '<strong>$1</strong>');
+                    string = string.replace(/__(.+)__/g, '<strong>$1</strong>');
+                    string = string.replace(/\*(.+)\*/g, '<em>$1</em>');
+                    string = string.replace(/_(.+)_/g, '<em>$1</em>');
+                    string = string.replace(/``(.+)``/g, '<code>$1</code>');
+                    string = string.replace(/`(.+)`/g, '<code>$1</code>');
+                    return string;
+                };
+                $scope.parseContent = function (content) {
+                    return $sce.trustAsHtml(content);
+                };
+                $scope.isAuthor = function (email) {
+                    return email === postAuthorEmail;
+                };
+                $scope.getGravatar = function (email) {
+                    var hash;
+                    if (email === void 0) {
+                        email = '';
+                    }
+                    hash = email.trim();
+                    hash = hash.toLowerCase();
+                    hash = md5(hash);
+                    return '//gravatar.com/avatar/' + hash + '?s=104&d=identicon';
+                };
+                $scope.loveComment = function (commentId) {
+                    var comment, i, len, ref, results;
+                    ref = $scope.comments;
+                    results = [];
+                    for (i = 0, len = ref.length; i < len; i++) {
+                        if (window.CP.shouldStopExecution(1)) {
+                            break;
+                        }
+                        comment = ref[i];
+                        if (comment.id === commentId) {
+                            results.push(comment.loved = !comment.loved);
+                        } else {
+                            results.push(void 0);
+                        }
+                    }
+                    window.CP.exitedLoop(1);
+                    return results;
+                };
+                $scope.addReply = function (author) {
+                    if ($scope.newComment.content === void 0) {
+                        $scope.newComment.content = '';
+                    }
+                    if ($scope.newComment.content.search('@' + author + '@') === -1) {
+                        if ($scope.newComment.content[0] === '@') {
+                            $scope.newComment.content = ', ' + $scope.newComment.content;
+                        } else {
+                            $scope.newComment.content = ' ' + $scope.newComment.content;
+                        }
+                        return $scope.newComment.content = '@' + author + '@' + $scope.newComment.content;
+                    }
+                };
+                $scope.addNewComment = function () {
+                    $scope.newComment.id = $scope.comments.length + 1;
+                    $scope.newComment.author.website = $scope.newComment.author.website.replace(/https?:\/\/(www.)?/g, '');
+                    $scope.newComment.content = markdown($scope.newComment.content);
+                    $scope.newComment.loved = false;
+                    $scope.comments.push($scope.newComment);
+                    return $scope.newComment = {};
+                };
+                return $scope.$watch('newComment.email', function (newValue, oldValue) {
+                    var newCommentAvatar;
+                    newCommentAvatar = document.getElementById('newCommentAvatar');
+                    return newCommentAvatar.src = $scope.getGravatar($scope.newComment.email);
+                });
+            });
+        }.call(this));
+    </script>
+</head>
+<body>
+
+<svg viewBox="0 0 100 100" style="display:none">
+    <defs>
+        <path id="icon_love" d="M73.4,6c-10.2,0-19,5.7-23.4,14.1C45.5,11.7,36.7,6,26.6,6C11.9,6,0,18,0,32.7C0,68.9,50,94,50,94 s50-25.1,50-61.3C100,18,88.1,6,73.4,6L73.4,6z"></path>
+        <path id="icon_reply" d="M75.9,100C87,79.9,88.9,49.2,45.4,50.2V75L8,37.5L45.4,0v24.3C97.4,22.9,103.2,70.4,75.9,100z"></path>
+    </defs>
+</svg>
+<div ng-app="comments" ng-controller="commentsCtrl">
+    <ul ng-if="comments.length">
+        <li ng-repeat="comment in comments">
+            <header>
+                <h1 ng-if="comment.author.website.length == 0" ng-class="{ author: isAuthor(comment.author.email) }">{{ comment.author.name }}</h1>
+                <h1 ng-if="comment.author.website.length &gt; 0" ng-class="{ author: isAuthor(comment.author.email) }"><a ng-href="//{{ comment.author.website }}">{{ comment.author.name }}</a></h1>
+                <button ng-click="loveComment(comment.id)" ng-class="{ loved: comment.loved }" class="love">
+                    <svg viewBox="0 0 100 100">
+                        <use xlink:href="#icon_love"></use>
+                    </svg>
+                </button>
+                <button ng-click="addReply(comment.author.name)" class="reply">
+                    <svg viewBox="0 0 100 100">
+                        <use xlink:href="#icon_reply"></use>
+                    </svg>
+                </button><img ng-src="{{ getGravatar(comment.author.email) }}"/>
+            </header>
+            <article ng-bind-html="parseContent(comment.content)"></article>
+        </li>
+    </ul>
+    <form name="form" ng-submit="form.$valid &amp;&amp; addNewComment()" novalidate="novalidate">
+        <input type="text" placeholder="First and second name" ng-pattern="/[a-zA-Z.,-]+/" ng-model="newComment.author.name" required="required"/>
+        <textarea placeholder="Comment" ng-model="newComment.content" required="required"></textarea>
+        <input type="email" placeholder="Email" ng-model="newComment.author.email" required="required"/>
+        <input type="url" placeholder="Website" ng-model="newComment.author.website"/>
+        <button type="submit" class="ripple">Add comment</button><img id="newCommentAvatar" ng-src="{{ getGravatar(newComment.author.email) }}"/>
+    </form>
+</div>
+</body>
+</html>

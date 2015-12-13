@@ -1,0 +1,52 @@
+
+<div class="sign-up">
+    <div class="bs-example"  id="signUp">
+        <form class="form-horizontal">
+            <div class="form-group  has-feedback" ng-class="validate.usr_name.hasFeedback">
+                <label class="col-xs-4 control-label" for="usr">Username</label>
+                <div class="col-xs-8">
+                    <input type="text" id="usr" class="form-control" required placeholder="enter your name" autofocus="true" data-ng-model="userData.usr_name" data-ng-change="validate.checkName()">
+                    <span ng-class="validate.usr_name.feedback"class="glyphicon form-control-feedback"></span>
+                    <span ng-class="validate.usr_name.help"  >{{validate.usr_name.text}}</span>
+                </div>
+            </div></br>
+            <div class="form-group  has-feedback" ng-class="validate.usr_psw.hasFeedback">
+                <label class="col-xs-4 control-label" for="psw">Password</label>
+                <div class="col-xs-8">
+                    <input type="password" id="psw" class="form-control" required placeholder="enter your password" data-ng-model="userData.usr_psw" data-ng-change="validate.checkPsw()">
+                    <span ng-class="validate.usr_psw.feedback"class="glyphicon  form-control-feedback"></span>
+                    <span ng-class="validate.usr_psw.help">{{validate.usr_psw.text}}</span>
+                </div>
+            </div></br>
+            <div class="form-group  has-feedback" ng-class="validate.usr_email.hasFeedback">
+                <label class="col-xs-4 control-label" for="email">Email</label>
+                <div class="col-xs-8">
+                    <input type="text" id="email" class="form-control" required placeholder="enter your email" data-ng-model="userData.usr_email" data-ng-change="validate.checkEmail()">
+                    <span ng-class="validate.usr_email.feedback" class="glyphicon  form-control-feedback"></span>
+                    <span ng-class="validate.usr_email.help" >{{validate.usr_email.text}}</span>
+                </div>
+            </div></br>
+            <div class="form-group  has-feedback" ng-class="validate.usr_phone.hasFeedback">
+                <label class="col-xs-4 control-label" for="phone">Phone</label>
+                <div class="col-xs-8">
+                    <input type="text" id="phone" class="form-control" required placeholder="enter your mobile phone" data-ng-model="userData.usr_phone" data-ng-change="validate.checkPhone()">
+                    <span ng-class="validate.usr_phone.feedback" class="glyphicon  form-control-feedback"></span>
+                    <span ng-class="validate.usr_phone.help" >{{validate.usr_phone.text}}</span>
+                </div>
+            </div></br>
+            <div class="form-group  has-feedback">
+                <label class="col-xs-4 control-label" for="phone">User Type</label>
+                <div class="col-xs-8">
+                    <select data-ng-model="userData.usr_type" class="form-control">
+                        <option data-ng-repeat="typ in data.types">{{typ}}</option>
+                    </select>
+                </div>
+            </div></br>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary" data-ng-click="sign.up()">Sign up</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

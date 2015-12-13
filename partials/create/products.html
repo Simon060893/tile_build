@@ -1,0 +1,153 @@
+<section   data-ng-init="methods.find()"flow-prevent-drop flow-drag-enter="dropClass='drag-over'"
+         flow-drag-leave="dropClass=''" style="color: #000000">
+    <form name="articleForm" class="form-horizontal col-md-10" role="form"
+          data-ng-submit="methods.create((articleForm.$valid))" novalidate>
+        <div class="form-group" ng-class="{ 'has-error' : submitted && articleForm.srt_name.$invalid }">
+            <label mean-token="'create-srt_name'"for="srt_name" class="col-md-3 control-label">Sort name</label>
+            <div class="col-md-9">
+                <input name="srt_name" type="text" class="form-control" data-ng-model="sort.srt_name" id="srt_name"
+                       placeholder="work title" required>
+                <div ng-show="submitted && articleForm.srt_name.$invalid" class="help-block">
+                    <p ng-show="articleForm.srt_name.$error.required">name is required</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-error' : submitted && articleForm.order.$invalid }">
+            <label mean-token="'create-order'"for="order" class="col-md-3 control-label">Order</label>
+            <div class="col-md-9">
+                <input name="order" type="number" class="form-control" data-ng-model="work.order" id="order"
+                       placeholder="work order" required>
+
+                <div ng-show="submitted && articleForm.order.$invalid" class="help-block">
+                    <p ng-show="articleForm.order.$error.required">order is required</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-error' : submitted && articleForm.link.$invalid }">
+            <label mean-token="'create-link'"for="link" class="col-md-3 control-label">Link</label>
+            <div class="col-md-9">
+                <input name="link" type="text" class="form-control" data-ng-model="work.link" id="link"
+                       placeholder="work order" required>
+
+                <div ng-show="submitted && articleForm.link.$invalid" class="help-block">
+                    <p ng-show="articleForm.link.$error.required">link is required</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label mean-token="'permissions'" for="technology" class="col-md-3 control-label">Technologies</label>
+            <div class="col-md-9">
+                <ui-select id="technology" multiple ng-model="work.technology" append-to-body="'true'" on-select="selectTechnology()">
+                    <ui-select-match style="color: black" placeholder="Select permissions..." ng-click="showDescendants();">{{$item}}</ui-select-match>
+                    <ui-select-choices repeat="circle in technology | filter:$select.search" name="technology">
+                        {{circle}}
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+
+        <div class="form-group" ng-show="descendants.length">
+            <label mean-token="'descendants'" for="descendants" class="col-md-3 control-label">Descendants</label>
+            <div class="col-md-9">
+                <span id="descendants" ng-repeat="descendant in work.descendants">{{descendant}} <span ng-hide="$last">, </span></span>
+            </div>
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-error' : submitted && articleForm.short_descr.$invalid }">
+            <label mean-token="'create-short_descr'" for="short_descr" class="col-md-3 control-label">Short description</label>
+
+            <div class="col-md-9">
+                <textarea name="short_descr" data-ng-model="work.short_descr" id="short_descr" cols="10" rows="2"
+                          placeholder="Short description" class="form-control" required></textarea>
+
+                <div ng-show="submitted && articleForm.short_descr.$invalid" class="help-block">
+                    <p ng-show="articleForm.short_descr.$error.required">Description is required</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group" ng-class="{ 'has-error' : submitted && articleForm.descr.$invalid }">
+            <label mean-token="'create-descr'" for="descr" class="col-md-3 control-label">Content</label>
+
+            <div class="col-md-9">
+                <textarea name="descr" data-ng-model="work.descr" id="descr" cols="30" rows="10"
+                          placeholder="Description" class="form-control" required></textarea>
+
+                <div ng-show="submitted && articleForm.descr.$invalid" class="help-block">
+                    <p ng-show="articleForm.descr.$error.required">Description is required</p>
+                </div>
+            </div>
+        </div>
+
+
+        <div   flow-init="{singleFile:true}" class="form-group" ng-class="{ 'has-error' : submitted && !($flow.files.length) }">
+            <div   style="width: 100%">
+                <div flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]">
+                    <h3><a name="image-example" class="anchor" href="#"><span class="octicon octicon-link"></span></a>upload work logo</h3>
+
+                    <div class="thumbnail" ng-show="!$flow.files.length">
+                        <img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image"/>
+                    </div>
+                    <div class="thumbnail" ng-show="$flow.files.length">
+                        <img id ="logo" flow-img="$flow.files[0]"  />
+                    </div>
+                    <div>
+                        <span class="btn btn-primary" ng-show="!$flow.files.length" flow-btn>Select image</span>
+                        <span class="btn btn-info" ng-show="$flow.files.length" flow-btn>Change</span>
+                        <span class="btn btn-danger" ng-show="$flow.files.length" ng-click="$flow.cancel()">  Remove</span>
+                    </div>
+                    <p> Only PNG,GIF,JPG,JEPG files allowed. </p>
+                </div>
+                <div ng-show="submitted && !($flow.files.length)" class="help-block">
+                    <p ng-show="!($flow.files.length)">logo is required</p>
+                </div>
+            </div>
+        </div>
+
+        <h3><a name="gallery-example" class="anchor" href="#gallery-example"><span class="octicon octicon-link"></span></a>Preview images upload</h3>
+        <div flow-init
+             flow-files-submitted="$flow.upload()"
+             flow-file-added="!!{png:1,gif:1,jpg:1,jpeg:1}[$file.getExtension()]"
+             id='imgs' >
+            <div class="drop" flow-drop ng-class="dropClass">
+                <span class="btn btn-default" flow-btn>Upload Image</span>
+                <span class="btn btn-default" flow-btn flow-directory ng-show="$flow.supportDirectory">Upload Folder of Images</span>
+                <b>OR</b>
+                Drag And Drop your images here
+            </div>
+            <br/>
+            <div>
+                <div data-ng-repeat="file in $flow.files" class="gallery-box">
+                    <span class="title">{{file.name}}</span>
+                    <div class="thumbnail" ng-show="$flow.files.length">
+                        <img flow-img="file" />
+                    </div>
+                    <div class="progress progress-striped" ng-class="{active: file.isUploading()}">
+                        <div class="progress-bar" role="progressbar"
+                             aria-valuenow="{{file.progress() * 100}}"
+                             aria-valuemin="0"
+                             aria-valuemax="100"
+                             ng-style="{width: (file.progress() * 100) + '%'}">
+                            <span class="sr-only">{{file.progress()}}% Complete</span>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <a class="btn btn-xs btn-danger" ng-click="file.cancel()">
+                            Remove
+                        </a>
+                    </div>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-3 col-md-9">
+                <button mean-token="'create-submit'" type="submit" class="btn btn-info">Create</button>
+            </div>
+        </div>
+    </form>
+</section>

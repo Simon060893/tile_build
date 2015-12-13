@@ -1,0 +1,138 @@
+body{
+    margin: 0!important;
+}
+.tools{
+    display: none;
+    color: #a92e0f;
+}
+#texture{
+    position: fixed;
+    /*top:-10500px;*/
+    /*z-index: 10!important;*/
+}
+.dg.ac {
+    z-index: 10!important;
+}
+.plate{
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+#videoBack{
+    position: absolute;
+    top:0;
+    left:0;
+    width: 100%;
+    height:100%;
+    text-align: center;
+    z-index: -2;
+}
+.info{
+    display: block;
+    position: fixed;
+    top:25px;
+    left:10px;
+    width: 220px;
+    /*height:220px;*/
+    border-bottom-right-radius: 15px;
+    padding: 0px 5px 15px 5px;
+    text-align: center;
+    box-shadow:10px 10px 50px 20px black;
+    z-index: 10;
+}
+.info-content{
+    position: relative;
+    width: 100%;
+    height:100%;
+    float: left;
+}
+.img-content{
+    position: relative;
+    width: 100%;
+    height:60px;
+    float: left;
+    text-align: center;
+}
+.img-content img{
+    position: relative;
+    height: 100%;
+}
+.container{
+    position: relative!important;
+    width: 100%!important;
+    padding: 0!important;
+}
+label{
+    position: relative!important;
+    width: 20%!important;
+    color: white!important;
+}
+.col-sm-10{
+    position: relative!important;
+    width: 74%!important;
+    float: right!important;
+}
+#clickme{
+    cursor: pointer;
+}
+#tog,.img-content{
+    display: none;
+}
+#tog{
+    position: relative;
+    width: 100%;
+    overflow: auto;
+    overflow: auto;
+    max-height: 80px;
+}
+.form-horizontal,.form-control[disabled]{
+    font-size: 12px!important;
+}
+.form-horizontal .form-group{
+    margin-right:0px!important;
+}
+/*scroll*/
+body {
+    scrollbar-face-color: #000000;
+    scrollbar-shadow-color: #2D2C4D;
+    scrollbar-highlight-color:#7D7E94;
+    scrollbar-3dlight-color: #7D7E94;
+    scrollbar-darkshadow-color: #2D2C4D;
+    scrollbar-track-color: #7D7E94;
+    scrollbar-arrow-color: #C1C1D1;
+}
+::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+::-webkit-scrollbar-track {
+    background-color:rgba(255, 255, 255, 0);
+    /*border-right: 1px solid black;*/
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #9A8D8D;
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: #aaa;
+}
+
+@media screen and (max-width:595px) {
+    .info{
+        display: none;
+    }
+    .dg.ac{
+        position: absolute!important;
+        right:inherit!important;
+        left:10px!important;
+        top:25px!important;
+    }
+}
+
+
+
+
+
+

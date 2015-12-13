@@ -1,0 +1,45 @@
+
+.sort-create{
+    position: absolute;
+    padding: 10px;
+    margin: auto;
+    width: 380px;
+    max-height: 280px;
+    overflow: auto;
+    top: calc((100vh - 964px)/2);
+    left: calc((100vw - 380px)/2);
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+td>a:hover{
+    text-decoration: underline;
+}
+.dftView{
+    background-color:#ffffff;
+    color: #000000
+}
+.sort-view{
+padding: 10px;
+    max-height: 340px;
+    height: 340px;
+    top: calc((100vh - 340px)/2);
+    /*top: calc((100vh - .sort-view(height))/2);*/
+    overflow: auto;
+    -webkit-overflow: overlay;
+}
+section{
+    max-height: 440px;
+    overflow: auto;
+}
+.close{
+    right:10px;
+}
+.table>tbody>tr>td,html input[disabled]{
+    cursor: pointer;
+}
+html input[disabled]{
+    border: none;
+    background: #eee;
+}
+.table>tbody>tr>td>a:hover{
+    text-decoration: underline;
+}

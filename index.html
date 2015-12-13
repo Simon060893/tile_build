@@ -1,45 +1,47 @@
 <!DOCTYPE html>
 <html lang="en" data-ng-app="Store" data-ng-controller="Main">
-<head >
+<head>
     <meta charset="UTF-8">
     <title>Tittle</title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Tils sort" />
-    <meta name="keywords" content="tils" />
-    <meta name="author" content="Kate Pasku" />
+    <meta name="description" content="Tils sort"/>
+    <meta name="keywords" content="tils"/>
+    <meta name="author" content="Kate Pasku"/>
 
+    <!--<script>document.write('<base href="' + document.location + '" />');</script>-->
+    <!--<base href="http://pasku.net.ua/projects/tiles/"/>-->
     <link rel="shortcut icon" href="favicon.ico">
-    <link rel="stylesheet" type="text/css" href="js/libs/bootstrap-3.3.5-dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="css/menu/normalize.css" />
-    <link rel="stylesheet" type="text/css" href="css/menu/demo.css" />
-    <link rel="stylesheet" type="text/css" href="css/menu/component1.css" />
-    <link rel="stylesheet" href="css/preloader.css">
+    <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" type="text/css" href="assets/css/menu/normalize.css"/>
+    <link rel="stylesheet" type="text/css" href="assets/css/menu/demo.css"/>
+    <link rel="stylesheet" type="text/css" href="assets/css/menu/component1.css"/>
+    <link rel="stylesheet" type="text/css" href="assets/css/preloader.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/main.css">
 
-    <script src="js/libs/jquery.min.js" type="text/javascript"></script>
-    <script src="js/libs/modernizr-2.6.2.min.js"></script>
-    <script src="js/libs/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
-    <script src="js/libs/assets/angular/angular.min.js"></script>
-    <script src="js/libs/assets/angular-animate/angular-animate.min.js"></script>
-    <script src="js/libs/assets/angular-sanitize/angular-sanitize.min.js"></script>
-    <script src="js/libs/assets/angular-carousel/dist/angular-carousel.min.js"></script>
-    <script src="js/libs/assets/angular-touch/angular-touch.min.js"></script>
-    <script src="js/libs/assets/angular-swipe/dist/angular-swipe.min.js"></script>
-    <script src="js/libs/assets/angular-snapscroll/dist/angular-snapscroll.min.js"></script>
-    <script src="js/libs/assets/angular-ui-router/release/angular-ui-router.min.js"></script>
-    <script src="js/libs/assets/angular-resource/angular-resource.min.js"></script>
-    <script src="js/libs/assets/angular-translate/angular-translate.min.js"></script>
-    <script src="js/libs/assets/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
-    <script src="js/libs/jquery.nicescroll.min.js"></script>
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="bower_components/angular-easyfb/src/angular-easyfb.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+    <script src="bower_components/angular-resource/angular-resource.min.js"></script>
+    <script src="bower_components/angular-translate/angular-translate.min.js"></script>
+    <script src="bower_components/angular-translate-loader-static-files/angular-translate-loader-static-files.min.js"></script>
+    <script src="bower_components/flow.js/dist/flow.min.js"></script>
+    <script src="bower_components/ng-flow/dist/ng-flow.min.js"></script>
+    <script src="bower_components/fusty-flow.js/src/fusty-flow.js"></script>
+    <script src="bower_components/fusty-flow.js/src/fusty-flow-factory.js"></script>
 
-    <!--module-->
-    <script src="js/module/store.js"></script>
-    <script src="js/module/services.js"></script>
-    <script src="js/module/router.js"></script>
-    <script src="js/module/controller.js"></script>
-
+    <script src="assets/js/libs/jquery.nicescroll.min.js"></script>
+    <script src="assets/js/libs/modernizr-2.6.2.min.js"></script>
+    <script src="assets/js/module/store.js"></script>
+    <script src="assets/js/module/services.js"></script>
+    <script src="assets/js/module/router.js"></script>
+    <script src="assets/js/module/controller.js"></script>
+    <script src="assets/js/module/plugins.js"></script>
+    <script src="assets/js/menu/polyfills.js"></script>
 </head>
-<body style="    margin: 0!important;">
+<body>
 <div class="container-loader">
     <div class="cssload-loader">
         <div class="cssload-dot"></div>
@@ -47,41 +49,59 @@
         <div class="cssload-dot"></div>
     </div>
 </div>
-
 <div class="container_main ">
     <!-- Top Navigation -->
     <div class="codrops-top clearfix">
-        <a data-ng-click=" $root.active='home_nav'"  class="codrops-icon codrops-icon-prev right " href="/sign_in"><span>Sign in</span></a>
-        <span class="right"><a class="codrops-icon codrops-icon-drop" href="http://tympanus.net/codrops/?p=16114"><span>Sign up</span></a></span>
+        <div data-ng-hide="methods.isAuth()">
+            <a data-ng-click="containerVis = true;" ui-sref="sign_in" href="#"
+               class="codrops-icon codrops-icon-prev right "><span>Sign in</span></a>
+            <span class="right"><a data-ng-click="containerVis = true;" ui-sref="sign_up" href="#"
+                                   class="codrops-icon codrops-icon-drop"><span>Sign up</span></a></span>
+        </div>
+        <div data-ng-show="methods.isAuth()">
+            <span class="left">Hello, <a data-ng-click="containerVis = true;" ui-sref="info" href="#"
+                                         class="icon-user icon-user-drop"><span> {{session.user.usr_name}}</span></a></span>
+            <a data-ng-click="methods.exit()" href="#" class="icon-off icon-off-prev right "><span> Exit</span></a>
+        </div>
     </div>
     <div class="ifr">
-        <div id="iframediv"></div>
+        <div id="iframediv">
+
+        </div>
     </div>
     <div class="component">
         <!-- Start Nav Structure -->
-        <button class="cn-button" id="cn-button">+</button>
-        <div class="cn-wrapper" id="cn-wrapper">
+        <button class="cn-button" data-ng-show="menu.btn" data-ng-click="menu.changeM(true)">+</button>
+        <button class="cn-button" data-ng-hide="menu.btn" data-ng-click="menu.changeM()">-</button>
+        <div class="cn-wrapper" data-ng-class="menu.front">
             <ul>
-                <li ><a href="#"><span class="icon-picture"></span></a></li>
-                <li><a href="#"><span class="icon-headphones"></span></a></li>
-                <li data-ng-click=" $root.active='home_nav'"  class="home_nav"><a href="/home"><span class="icon-home"></span></a></li>
-                <li><a href="#"><span class="icon-facetime-video"></span></a></li>
-                <li><a href="#"><span class="icon-envelope-alt"></span></a></li>
+                <li data-ng-click="menu.changeM(false,true);"><a href="#"><span class="icon-picture"></span></a></li>
+                <li data-ng-click="menu.changeM(false,true);"><a ui-sref="sorts" href="#"><span
+                        class="icon-th-large"></span></a></li>
+                <li data-ng-click="menu.changeM(false,true);"><a ui-sref="home" href="#"><span class="icon-home"></span></a>
+                </li>
+                <li data-ng-click="menu.changeM(false,true);"><a ui-sref="comments" href="#"><span
+                        class="icon-facetime-video"></span></a></li>
+                <li data-ng-click="menu.changeM(false,true);"><a ui-sref="comments" href="#"><span
+                        class="icon-comment-alt"></span></a></li>
             </ul>
         </div>
-        <div id="cn-overlay" class="cn-overlay"></div>
+        <div id="cn-overlay" class="cn-overlay" data-ng-click="menu.changeM()" data-ng-class="menu.back"></div>
     </div>
 </div>
 
-<div data-ng-click="containerVis = false" data-ng-show="containerVis" class="container_main" style="background-color: rgba(13, 9, 6, 0.36)">
-
+<div data-ng-show="containerVis" class="container_main ">
+    <div data-ng-click="containerVis = false;goHome=true" class="cont">
+        <!--<a ui-sref="home_en" href="#"></a>-->
+    </div>
+    <ui-view autoscroll></ui-view>
 </div>
-<ui-view autoscroll ></ui-view>
+
 <script>
-    $('#iframediv').html('<iframe id="myid" style="position: relative;  top:0;left:0;width: 100%; height: 100%;" align="left" frameborder="0" src="iframe.html"/>');
-    $('iframe#myid').load(function () {
-        $(".container-loader").fadeOut();
-    });
+    var load = {
+        ses: false,
+        ifr: true
+    };
     function loader(flag) {
         if (flag) {
             $(".container-loader").fadeIn('slow');
@@ -89,9 +109,14 @@
             $(".container-loader").fadeOut();
         }
     }
+  /*  $('#iframediv').html('<iframe id="myid" style="position: relative;  top:0;left:0;width: 100%; height: 100%;" align="left" frameborder="0" src="iframe.html"/>');
+    $('iframe#myid').load(function () {
+        load.ifr = true;
+        if (load.ses) {
+            loader();
+        }
+    });*/
 </script>
-<script src="js/menu/polyfills.js"></script>
-<script src="js/menu/demo1.js"></script>
 <!--<script type="text/paperscript" canvas="texture">
 // Create a raster item using the image tag with id='mona'
 var raster = new Raster('pic');

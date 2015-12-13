@@ -1,0 +1,22 @@
+{
+  "name": "mean",
+  "dependencies": {
+    "jquery": "latest",
+    "jquery-ui": "~1.11.4",
+    "bootstrap": "~3.3.6",
+    "angular": "~1.4.3",
+    "angular-easyfb": "latest",
+    "angular-ui-router": "#master",
+    "angular-resource": "latest",
+    "angular-translate-loader-static-files": "latest",
+    "angular-translate": "latest",
+    "three.js": "master",
+    "dat.gui": "master",
+    "paper": "latest",
+    "FileSaver.js": "~0.0.2",
+    "flow": "*",
+    "ng-flow": "~2",
+    "fusty-flow.js": "~1"
+  },
+  "devDependencies": {}
+}
