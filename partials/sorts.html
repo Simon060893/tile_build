@@ -1,0 +1,119 @@
+
+<section   data-ng-init="methods.allSorts();isAddSort=false" class="dftView sort-view">
+    <div class="close" data-ng-click="methods.close()">x</div>
+    <div class="dftView"data-ng-click="isAddSort = false">
+        <h2>Sorts</h2>
+
+        <table class="table table-hover table-striped">
+            <thead>
+            <tr>
+                <th>№</th>
+                <th>Name</th>
+                <th>Adress</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Admin</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody data-ng-repeat="sort in sorts">
+            <tr data-ng-init="sort.disabled = true" >
+                <form name="editSortForm" role="form" novalidate >
+                <td ><a href="/sorts/{{sort.id_sort}}/products" >{{$index}}</a></td>
+                <td data-ng-click="sort.Active =!sort.Active"><div data-ng-class="{ 'has-error' : sort.editSubmitted && editSortForm.name.$invalid }"><input name="name" type="text" class="form-control" data-ng-disabled="sort.disabled" data-ng-model="sort.srt_name" required></div></td>
+                <td data-ng-click="sort.Active =!sort.Active"><div data-ng-class="{ 'has-error' : sort.editSubmitted && editSortForm.adress.$invalid }"><input name="adress" type="text" class="form-control" data-ng-disabled="sort.disabled" data-ng-model="sort.srt_adress" required></div></td>
+                <td data-ng-click="sort.Active =!sort.Active"><div data-ng-class="{ 'has-error' : sort.editSubmitted && editSortForm.phone.$invalid }"><input name="phone" type="text" class="form-control" data-ng-disabled="sort.disabled" data-ng-model="sort.srt_phone" ng-pattern="/^[0-9]\d{9}$/"></div></td>
+                <td data-ng-click="sort.Active =!sort.Active"><div data-ng-class="{ 'has-error' : sort.editSubmitted && editSortForm.email.$invalid }"><input name="email" type="email" class="form-control" data-ng-disabled="sort.disabled" data-ng-model="sort.srt_email" required></div></td>
+                <td data-ng-click="sort.Active =!sort.Active"><input type="text" class="form-control" data-ng-disabled="true" data-ng-model="session.user.usr_name"></td>
+                <td ng-show="auth.isAuth">
+                    <div ng-show="auth.isAuth()">
+                     <span class="left"><a data-ng-click="methods.dropCurSort(sort.id_sort, $index, $event)"  href="#"
+                                           class="icon-trash icon-trash-drop">Drop</a></span>&nbsp
+                        <a data-ng-click="methods.editCurSort(sort,editSortForm.$valid, $event)" href="#"
+                           data-ng-class="{ 'icon-edit': sort.disabled, 'icon-ok': !sort.disabled }"class="right ">Edit</a>
+                    </div>
+                </td>
+                </form>
+            </tr>
+            <tr data-ng-show="sort.Active">
+                <td colspan="7">
+                    <table class="table" >
+                        <thead>
+                        <tr>
+                            <th>№</th>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="product in sort.listProducts">
+                            <td><a href="/sorts/{{sort.id_sort}}/products/{{product.id_product}}" >{{$index}}</a></td>
+                            <td><input class="form-control"type="text"  data-ng-disabled="true" ng-model="product.prdct_name"></td>
+                            <td><input class="form-control"type="text"  ng-disabled="true" ng-model="product.prdct_price"></td>
+                            <td >
+                                <div ng-show="auth.isAuth()" style="min-width: 200px;">
+                                 <span class="left"><a data-ng-click="methods.dropCurProduct(sort, $index, product)"  href="#"
+                                                       class="icon-trash icon-trash-drop">Drop</a></span>
+                                </div>
+                                <div ng-hide="auth.isAuth()" >
+                                  <span class="left"><a data-ng-click="methods.selectCurProduct(sort, $index, product)"  href="#"
+                                                        ng-class="product.isAdded">Select</a></span>
+                                </div>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <button data-ng-show="auth.isAuth()" type="button" class="btn btn-info" data-ng-click="isAddSort = true">Add new sort</button>
+</section>
+
+<div   data-ng-show="isAddSort" class="content sort-create dftView" >
+    <div class="container pop-up" id="sort-create">
+        <div class="close" data-ng-click="isAddSort = false">x</div>
+        <h2>Adding new sort</h2>
+
+        <form class="form-horizontal col-md-10" role="form" name="sortForm" data-ng-submit="methods.createSort((sortForm.$valid))" novalidate>
+
+            <div class="form-group" ng-class="{ 'has-error' : sort.submitted && sortForm.name.$invalid }">
+                <label class="control-label col-sm-4" for="Name">Name:</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" name="name" id="Name" ng-model="sort.newInputDt.srt_name"
+                           placeholder="Enter name" required>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error' : sort.submitted && sortForm.adress.$invalid }">
+                <label class="control-label col-sm-4" for="adress">Adress:</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="adress" name="adress" ng-model="sort.newInputDt.srt_adress"
+                           placeholder="Enter adress" required>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error' : sort.submitted && sortForm.email.$invalid }">
+                <label class="control-label col-sm-4" for="email">Email:</label>
+                <div class="col-sm-8">
+                    <input type="email" class="form-control" id="email" name="email" ng-model="sort.newInputDt.srt_email"
+                           placeholder="Enter email" required>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{ 'has-error' : sort.submitted && sortForm.phone.$invalid }">
+                <label class="control-label col-sm-4" for="phone">Phone:</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" id="phone" name="phone" ng-model="sort.newInputDt.srt_phone"
+                           placeholder="Enter phone" ng-pattern="/^[0-9]\d{9}$/"required>
+                </div>
+            </div>
+            </br>
+            <div class="form-group">
+                <label class="control-label col-sm-4" for="cr"></label>
+                <div class="col-sm-8">
+                    <button mean-token="'create-submit'" type="submit" id="cr"class="btn btn-success">Create</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

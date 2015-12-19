@@ -176,8 +176,8 @@ class Sort
             return array('error' => 'could\'t get any sorts');
         } else {
             $results = array();
-            while ($row =  mysqli_fetch_array($res,MYSQL_ASSOC)) {
-                $products = $this->getProducts($row);
+            while ($row =  (mysqli_fetch_array($res,MYSQL_ASSOC))) {
+                $products = $this->getProducts($row["id_sort"]);
                 $row['listProducts'] = $products['error'] ? array() : $products['data'];
                 $results[]=$row;
             }
@@ -185,19 +185,24 @@ class Sort
         }
     }
 
-    public function getProducts($sort)
+    public function getProducts($id_sort=0)
     {
-        $id_sort = htmlspecialchars($sort->id_sort);
-        if (!empty($id_sort)) {
+        $id_sort = htmlspecialchars($id_sort);
+        $id_sort = empty($id_sort)?0:$id_sort;
+//        if (!empty($id_sort)) {
             $sql = "SELECT * FROM `products` WHERE `id_sort`={$id_sort} ORDER BY `created`";
             $res = $this->db->query($sql);
             if (!$res) {
                 return array('error' => 'could\'t get any product');
             } else {
-                return array('data' => $res->fetch_all());
+                $results = array();
+                while ($row =  mysqli_fetch_array($res,MYSQL_ASSOC)) {
+                    $results[]=$row;
+                }
+                return array('data' => $results);
             }
-        }
-        return array('data' => array());
+//        }
+//        return array('data' => array());
     }
 
     private function sendInfoOnEmail($data)

@@ -40,6 +40,10 @@ if (!empty($request->method) || !empty($post->method)) {
             $data = $fgr->editSort($post->data);
             die(json_encode($data));
             break;
+        case "getProducts":
+            $data = $fgr->getProducts();
+            die(json_encode($data));
+            break;
         case "getSession":
             die(json_encode(array('session'=>$_SESSION)));
             break;
